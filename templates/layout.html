@@ -4,15 +4,26 @@
     <title> 
       {{ title }}
     </title>
-    <link rel="stylesheet" href="/static/style.css" />
+    <link rel="stylesheet" href="style.css" />
     <script src="" /></script>
     <meta charset="UTF-8">
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, shrink-to-fit=no' />
   </head>
   <body>
+    
+    <div id='page'>
+    <header>
+      Upload or record a file
+    </header>
+    
+    <div id='content'>
 
     {% block content %}
     {% endblock %}
+
+    </div>
+
+    </div>
 
   </body>
 </html>
