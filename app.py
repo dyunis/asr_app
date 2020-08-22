@@ -5,16 +5,6 @@ app = Flask(__name__)
 def main():
     app.run(debug=True)
 
-@app.route('/')
-def index():
-    return f'{[1, 3, 4]} this is the index'
-
-@app.route('/hello')
-def hello_world():
-    return 'Hello, World'
-
-# the path in app.route generates the html file path for the webapp
-
 @app.route('/', methods=['GET', 'POST'])
 def input():
     error = None
@@ -26,7 +16,7 @@ def input():
             error = 'file is None'
         # (read in wav file)
         wav = 0
-        return render_template('result.html', name=, description=, error=error)
+        return render_template('result.html', name='', description='', error=error)
 
     return render_template('index.html')
 
