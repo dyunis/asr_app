@@ -15,19 +15,20 @@ def hello_world():
 
 # the path in app.route generates the html file path for the webapp
 
-# @app.route('/', methods=['GET', 'POST'])
-# def input():
-    # if request.method == 'POST':
-        # if 'file' not in request.files:
-            # return redirect(request.url)
-        # f = request.files.get('file')
-        # if not f:
-            # return
-        # # (read in wav file)
-        # wav = 0
-        # return render_template('result.html', name=, description=)
-# 
-    # return render_template('index.html')
+@app.route('/', methods=['GET', 'POST'])
+def input():
+    error = None
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return redirect(request.url)
+        f = request.files.get('file')
+        if not f:
+            error = 'file is None'
+        # (read in wav file)
+        wav = 0
+        return render_template('result.html', name=, description=, error=error)
+
+    return render_template('index.html')
 
 if __name__=='__main__':
     main()
