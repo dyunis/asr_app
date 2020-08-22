@@ -6,6 +6,10 @@ def main():
     app.run(debug=True)
 
 @app.route('/', methods=['GET', 'POST'])
+def index():
+    return render_template('index.html')
+
+@app.route('/asr', methods=['GET', 'POST'])
 def input():
     error = None
     if request.method == 'POST':
