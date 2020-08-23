@@ -2,8 +2,14 @@
 {% block content %}
 
 <form class='upload' method='post' enctype='multipart/form-data'>
-    <input type='file' accept='audio/*' capture>
+    <input type='file' accept='audio/*'>
     <input type='submit' value='Upload'>
 </form>
+<button onclick='setupAudio()'>
+    Record Clip
+</button>
+<button onclick='stopAudio()'>
+    Stop Recording
+</button>
 
 {% endblock %}
