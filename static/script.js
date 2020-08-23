@@ -1,25 +1,10 @@
 let mediaRecorder
-let chunks = []
 
 function setupAudio () {
   let constraints = {audio: {channelCount: 1, sampleRate: 16000}}
   navigator.mediaDevices.getUserMedia(constraints)
     .then(startMic)
     .catch(audioError)
-}
-
-mediaRecorder.ondataavailable = function (e) {
-  console.log('data available')
-  chunks.push(e.data)
-  mediaRecorder.stop()
-}
-
-mediaRecorder.onstop = function(e) {
-  const blob = new Blob(chunks, {'type': 'audio/wav'})
-  chunks = []
-  const audioURL = window.URL.createObjectURL(blob)
-  // stop the stream at the end (revoke permissions)
-  stream.getAudioTracks()[0].stop()
 }
 
 // TODO:
@@ -31,9 +16,31 @@ mediaRecorder.onstop = function(e) {
 
 function startMic (stream) {
   mediaRecorder = new MediaRecorder(stream, {'type': 'audio/wav'})
-  mediaRecorder.start(160000)
+  mediaRecorder.start(16000)
   console.log('starting media recorder')
-  mediaRecorder
+
+  let chunks = [];
+  mediaRecorder.ondataavailable = function (e) {
+    console.log('data available')
+    chunks.push(e.data)
+    mediaRecorder.stop()
+  }
+
+  mediaRecorder.onstop = function(e) {
+    console.log('stopping recorder')
+    const blob = new Blob(chunks, {'type': 'audio/wav'})
+    chunks = [];
+    const audioURL = window.URL.createObjectURL(blob)
+    // stop the stream at the end (revoke permissions)
+    stream.getAudioTracks()[0].stop()
+    
+    const audio = document.createElement('audio')
+    audio.setAttribute('controls', '')
+    audio.src = audioURL
+    let parentNode = document.getElementById('content')
+    parentNode.appendChild(audio)
+  }
+
 }
 
 function audioError (error) {
