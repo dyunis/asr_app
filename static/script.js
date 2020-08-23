@@ -13,6 +13,8 @@ function setupAudio () {
 // show in window
 // save blob to a wav file to use as input in backend
 // show backend result
+//
+// example at https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API/Using_the_MediaStream_Recording_API
 
 function startMic (stream) {
   mediaRecorder = new MediaRecorder(stream, {'type': 'audio/wav'})
@@ -35,10 +37,21 @@ function startMic (stream) {
     stream.getAudioTracks()[0].stop()
     
     const audio = document.createElement('audio')
+    const deleteButton = document.createElement('button')
+
     audio.setAttribute('controls', '')
     audio.src = audioURL
+    deleteButton.innerHTML = 'Delete'
+
     let parentNode = document.getElementById('content')
     parentNode.appendChild(audio)
+    parentNode.appendChild(deleteButton)
+
+    deleteButton.onclick = function (e) {
+      let target = e.target
+      target.parentNode.removeChild(audio)
+      target.parentNode.removeChild(target)
+    }
   }
 
 }
