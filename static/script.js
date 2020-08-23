@@ -1,3 +1,6 @@
+let mediaRecorder
+let chunks = []
+
 function setupAudio () {
   let constraints = {audio: {channelCount: 1, sampleRate: 16000}}
   navigator.mediaDevices.getUserMedia(constraints)
@@ -5,6 +8,21 @@ function setupAudio () {
     .catch(audioError)
 }
 
+mediaRecorder.ondataavailable = function (e) {
+  console.log('data available')
+  chunks.push(e.data)
+  mediaRecorder.stop()
+}
+
+mediaRecorder.onstop = function(e) {
+  const blob = new Blob(chunks, {'type': 'audio/wav'})
+  chunks = []
+  const audioURL = window.URL.createObjectURL(blob)
+  // stop the stream at the end (revoke permissions)
+  stream.getAudioTracks()[0].stop()
+}
+
+// TODO:
 // get max 15 seconds of data
 // map stream to blob with wav format
 // show in window
@@ -12,23 +30,10 @@ function setupAudio () {
 // show backend result
 
 function startMic (stream) {
-  const mediaRecorder = new MediaRecorder(stream)
+  mediaRecorder = new MediaRecorder(stream, {'type': 'audio/wav'})
   mediaRecorder.start(160000)
   console.log('starting media recorder')
-
-  let chunks = []
-  mediaRecorder.ondataavailable = function (e) {
-    chunks.push(e.data)
-    mediaRecorder.stop()
-  }
-
-  mediaRecorder.onstop = function(e) {
-    const blob = new Blob(chunks, {'type': 'audio/wav'})
-    chunks = []
-    const audioURL = window.URL.createObjectURL(blob)
-    // stop the stream at the end (revoke permissions)
-    stream.getAudioTracks()[0].stop()
-  }
+  mediaRecorder
 }
 
 function audioError (error) {
