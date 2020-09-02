@@ -10,10 +10,10 @@
 <button id='record' onclick='setupAudio()'>
     Record Clip
 </button>
-<audio id='audio' src={{ wav }} controls>
+<audio id='audio' src='{{ wav }}' controls>
 </audio>
 <div id='label'>
-{{ name }}
+{{ label }}
 </div>
 
 {% endblock %}
