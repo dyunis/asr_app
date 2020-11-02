@@ -6,4 +6,3 @@
   - soundfile for doing spectrogram transform on the fly and using as input to
     RNN model
 - flask server
-- deploying with nginx?
