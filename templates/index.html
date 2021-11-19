@@ -3,14 +3,15 @@
 
 <form class='upload' method='post' enctype='multipart/form-data'>
     <input type='file' name='wav' accept='audio/wav' onchange='previewAudio()'>
-    <button type='submit'>
-        Upload
-    </button>
+    <input type='submit' id=submitButton'>
 </form>
 <button id='record' onclick='setupAudio()'>
     Record Clip
 </button>
-<audio id='audio'>
+<audio id='audio' src='{{ wav }}' controls>
 </audio>
+<div id='label'>
+{{ label }}
+</div>
 
 {% endblock %}

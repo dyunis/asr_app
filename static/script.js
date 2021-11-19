@@ -16,7 +16,7 @@ function setupAudio () {
 
 function startMic (stream) {
   mediaRecorder = new MediaRecorder(stream, {'type': 'audio/wav'})
-  mediaRecorder.start(15000) // 15000ms = 15s
+  mediaRecorder.start(3000) // 15000ms = 15s
   console.log('starting media recorder')
 
   let chunks = [];
@@ -34,6 +34,12 @@ function startMic (stream) {
     // stop the stream at the end (revoke permissions)
     stream.getAudioTracks()[0].stop()
     
+    // add audio blob to input form
+    let file = new File([blob], 'audio.wav', {type: 'audio/wav', lastModified: new Date().getTime()})
+    var container = new DataTransfer()
+    container.items.add(file)
+    document.querySelector('input[type=file]').files = container.files
+
     const audio = document.getElementById('audio')
     const deleteButton = document.createElement('button')
 
@@ -69,4 +75,19 @@ function previewAudio() {
   }
 
   if (file) reader.readAsDataURL(file)
+}
+
+async function upload_audio () {
+  let wav = document.getElementById('audio').src
+  let form_data = new FormData()
+  form_data.append('wav', wav);
+
+  let json = await fetch('/audio', {
+    method: 'POST',
+    cache: 'no-cache',
+    body: form_data
+  }).then(
+    (response) => response.json(),
+    () => console.log('failure on wav POST')
+  )
 }

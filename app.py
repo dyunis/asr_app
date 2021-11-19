@@ -1,12 +1,14 @@
+import io
 import os
 
 from flask import Flask, request, render_template, redirect, send_from_directory
+import scipy.io.wavfile
 from werkzeug.utils import secure_filename
-
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 3
+app.config['UPLOAD_EXTENSIONS'] = ['.wav']
 
 def main():
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
@@ -17,12 +19,8 @@ def main():
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() == 'wav'
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    return render_template('index.html')
-
 # TODO: file uploading for the record button (javascript)
-@app.route('/asr', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def input():
     error = None
     if request.method == 'POST':
@@ -34,11 +32,12 @@ def input():
             return redirect(request.url)
         if wav and allowed_file(wav.filename):
             filename = secure_filename(wav.filename)
-            wav.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            wav_bytes = wav.read()
-            label = get_prediction(wav_bytes)
-
-            return render_template('result.html', name='a name', label=label, error=error, wav=os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            wav_octal = wav.read() # octet-stream type from online?
+            wav_bytes = io.BytesIO(wav_octal) # convert to bytes
+            sr, audio = scipy.io.wavfile.read(wav_bytes) # audio is numpy array
+            save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            scipy.io.wavfile.write(save_path, sr, audio)
+            label = get_prediction(audio)
 
     return render_template('index.html')
 
